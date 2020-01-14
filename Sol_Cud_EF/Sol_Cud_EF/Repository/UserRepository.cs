@@ -288,6 +288,57 @@ namespace Sol_Cud_EF.Repository
 
         }
 
+        public async Task<(List<UserModel>,List<UserLoginModel>)> GetUserMultipleResultSetStoredProcedures()
+        {
+            return await Task.Run(() => {
+
+                List<UserModel> userModel = new List<UserModel>();
+                List<UserLoginModel> userLoginModel = new List<UserLoginModel>();
+
+                using (var cnn = eFCoreContext.Database.GetDbConnection())
+                {
+                    var cmm = cnn.CreateCommand();
+                    cmm.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmm.CommandText = "[dbo].[uspGetUsersMultiResultSet]";
+                    //cmm.Parameters.AddRange(param);
+                    cmm.Connection = cnn;
+                    cnn.Open();
+                    var reader = cmm.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        
+                        userModel.Add(new UserModel()
+                        {
+                            FirstName = Convert.ToString(reader["FirstName"]),
+                            LastName=Convert.ToString(reader["LastName"])
+
+                        });
+                    }
+                    reader.NextResult(); //move the next record set
+                    while (reader.Read())
+                    {
+                        userLoginModel.Add(new UserLoginModel()
+                        {
+                            UserName = Convert.ToString(reader["UserName"]),
+                            Password = Convert.ToString(reader["Password"])
+                        });  
+                    }
+
+                    (List<UserModel> userList, List<UserLoginModel> userLoginList) tuplesObj =
+                        (
+                            userList: userModel,
+                            userLoginList: userLoginModel
+                        );
+
+                    return tuplesObj;
+                }
+
+               
+            });
+            
+        }
+
       
     }
 }

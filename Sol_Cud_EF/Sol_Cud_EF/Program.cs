@@ -92,7 +92,7 @@ namespace Sol_Cud_EF
 
                     //}
 
-                   
+                   await userRepositoryObj?.GetUserMultipleResultSetStoredProcedures();
 
                 }).Wait();
 
