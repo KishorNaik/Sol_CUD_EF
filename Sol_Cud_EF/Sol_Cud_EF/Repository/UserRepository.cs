@@ -288,6 +288,7 @@ namespace Sol_Cud_EF.Repository
 
         }
 
+		//https://www.yogihosting.com/stored-procedures-entity-framework-core/
         public async Task<(List<UserModel>,List<UserLoginModel>)> GetUserMultipleResultSetStoredProcedures()
         {
             return await Task.Run(() => {
@@ -300,7 +301,7 @@ namespace Sol_Cud_EF.Repository
                     var cmm = cnn.CreateCommand();
                     cmm.CommandType = System.Data.CommandType.StoredProcedure;
                     cmm.CommandText = "[dbo].[uspGetUsersMultiResultSet]";
-                    //cmm.Parameters.AddRange(param);
+                    //cmm.Parameters.AddRange()
                     cmm.Connection = cnn;
                     cnn.Open();
                     var reader = cmm.ExecuteReader();
@@ -325,18 +326,68 @@ namespace Sol_Cud_EF.Repository
                         });  
                     }
 
+                    reader.Close();
+                   
+
                     (List<UserModel> userList, List<UserLoginModel> userLoginList) tuplesObj =
                         (
                             userList: userModel,
                             userLoginList: userLoginModel
                         );
 
+                  
                     return tuplesObj;
                 }
 
                
             });
             
+        }
+
+        public async Task<UserMultipleSelectResultSet> GetUserMultipleResultSetSP()
+        {
+            List<UserModel> userModel = new List<UserModel>();
+            List<UserLoginModel> userLoginModel = new List<UserLoginModel>();
+
+            return
+                await
+                eFCoreContext
+                .SqlQueryMultipleAsync<UserMultipleSelectResultSet>(
+                    "[dbo].[uspGetUsersMultiResultSet]",
+                    System.Data.CommandType.StoredProcedure,
+                    async (leDataReader) =>
+                    {
+                        while (leDataReader.Read())
+                        {
+
+                            userModel.Add(new UserModel()
+                            {
+                                FirstName = Convert.ToString(leDataReader["FirstName"]),
+                                LastName = Convert.ToString(leDataReader["LastName"])
+
+                            });
+                        }
+                        
+                        await leDataReader.NextResultAsync(); //move the next record set
+
+                        while (leDataReader.Read())
+                        {
+                            userLoginModel.Add(new UserLoginModel()
+                            {
+                                UserName = Convert.ToString(leDataReader["UserName"]),
+                                Password = Convert.ToString(leDataReader["Password"])
+                            });
+                        }
+
+                        UserMultipleSelectResultSet userMultipleSelectResultSet = new UserMultipleSelectResultSet()
+                        {
+                            UserModelList = userModel,
+                            UserLoginList = userLoginModel
+                        };
+
+                        return userMultipleSelectResultSet;
+                    }
+                    );
         }
 
       

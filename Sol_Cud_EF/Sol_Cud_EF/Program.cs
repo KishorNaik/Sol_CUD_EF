@@ -63,36 +63,48 @@ namespace Sol_Cud_EF
                     //});
 
                     //// Get User Data
-                    //try
-                    //{
-                    //    var data = await userRepositoryObj.GetUserDataStoredProcedure();
-                    //}
-                    //catch(Exception ex)
-                    //{
+                    try
+                    {
+                        var data = await userRepositoryObj.GetUserDataStoredProcedure();
+                    }
+                    catch (Exception ex)
+                    {
 
-                    //}
+                    }
 
-                    //// Get User Selected Data
-                    //try
-                    //{
-                    //    var data = await userRepositoryObj.GetUserDataSelectedColumnStoredProcedure();
-                    //}
-                    //catch (Exception ex)
-                    //{
+                    // Get User Selected Data
+                    try
+                    {
+                        var data = await userRepositoryObj.GetUserDataSelectedColumnStoredProcedure();
+                    }
+                    catch (Exception ex)
+                    {
 
-                    //}
+                    }
 
-                    // Get Join Data
-                    //try
-                    //{
-                    //    var data = await userRepositoryObj.GetUserJoinDataSelectedColumnStoredProcedure();
-                    //}
-                    //catch (Exception ex)
-                    //{
+                    //Get Join Data
+                    try
+                    {
+                        var data = await userRepositoryObj.GetUserJoinDataSelectedColumnStoredProcedure();
+                    }
+                    catch (Exception ex)
+                    {
 
-                    //}
+                    }
 
-                   await userRepositoryObj?.GetUserMultipleResultSetStoredProcedures();
+                    //await userRepositoryObj?.GetUserMultipleResultSetStoredProcedures();
+
+                    try
+                    {
+                        var result = await userRepositoryObj?.GetUserMultipleResultSetSP();
+
+                        var result1 = await userRepositoryObj?.GetUserMultipleResultSetSP();
+                    }
+                    catch(Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                    
 
                 }).Wait();
 
