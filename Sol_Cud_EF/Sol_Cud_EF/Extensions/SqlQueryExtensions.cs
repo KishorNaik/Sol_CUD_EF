@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -76,7 +77,44 @@ namespace Sol_Cud_EF.Extensions
 
         }
 
-        
+        public static async Task<TMultipleResultSet> SqlQueryMultipleAsync<TMultipleResultSet>(
+           this DbContext db,
+           string sql,
+           List<SqlParameter> listSqlParameter,
+           CommandType commandType,
+           Func<DbDataReader, Task<TMultipleResultSet>> funcReaders
+           )
+           where TMultipleResultSet : class
+        {
+
+            var connection = db.Database.GetDbConnection();
+
+            if (connection.State == ConnectionState.Closed || connection.State == ConnectionState.Broken)
+            {
+                await connection.OpenAsync();
+            }
+
+            var command = connection.CreateCommand();
+            command.CommandType = commandType;
+            command.CommandText = sql;
+            command.Connection = connection;
+
+            if(listSqlParameter!=null)
+            {
+                command.Parameters.AddRange(listSqlParameter.Cast<Object>().ToArray());
+            }
+            
+            var reader = await command.ExecuteReaderAsync();
+
+            var data = await funcReaders(reader);
+
+            await connection.CloseAsync();
+
+            return data;
+
+        }
+
+
 
         private class ContextForQueryType<T> : DbContext where T : class
         {
