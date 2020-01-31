@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.Data.SqlClient;
-using Sol_Cud_EF.Extensions;
+//using Sol_Cud_EF.Extensions;
 using Sol_Cud_EF.DbModel.ResultSet;
 using System.Data.Common;
+using EntityFrameworkCore.Query;
 
 namespace Sol_Cud_EF.Repository
 {
@@ -264,13 +265,15 @@ namespace Sol_Cud_EF.Repository
 
         public async Task<List<UserModel>> GetUserJoinDataSelectedColumnStoredProcedure()
         {
-
+            List<SqlParameter> listSqlParameter = new List<SqlParameter>();
+            listSqlParameter.Add(new SqlParameter("@UserId", 2));
 
             var data =
                 (
                  await
                  eFCoreContext
-                 .SqlQueryAsync<UserJoinResultSet>("EXEC uspGetUsersJoins")
+                 .SqlQueryAsync<UserJoinResultSet>("EXEC uspGetUsersJoins @UserId", listSqlParameter)
+                
                 )
                 .Select((leTblUsers) => new UserModel()
                 {

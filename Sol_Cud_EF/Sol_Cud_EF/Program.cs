@@ -65,7 +65,7 @@ namespace Sol_Cud_EF
                     //// Get User Data
                     try
                     {
-                        var data = await userRepositoryObj.GetUserDataStoredProcedure();
+                        //var data = await userRepositoryObj.GetUserDataStoredProcedure();
                     }
                     catch (Exception ex)
                     {
@@ -75,7 +75,7 @@ namespace Sol_Cud_EF
                     // Get User Selected Data
                     try
                     {
-                        var data = await userRepositoryObj.GetUserDataSelectedColumnStoredProcedure();
+                        //var data = await userRepositoryObj.GetUserDataSelectedColumnStoredProcedure();
                     }
                     catch (Exception ex)
                     {
@@ -96,9 +96,9 @@ namespace Sol_Cud_EF
 
                     try
                     {
-                        var result = await userRepositoryObj?.GetUserMultipleResultSetSP();
+                        //var result = await userRepositoryObj?.GetUserMultipleResultSetSP();
 
-                        var result1 = await userRepositoryObj?.GetUserMultipleResultSetSP();
+                        //var result1 = await userRepositoryObj?.GetUserMultipleResultSetSP();
                     }
                     catch(Exception ex)
                     {
